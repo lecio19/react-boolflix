@@ -1,18 +1,16 @@
-import SearchBar from "../components/SearchBar";
-import { useState } from "react";
+import Card from "../components/Card";
 import axios from "axios";
 import Flags from "../context/Flags";
-import ImgUrl from "../context/ImgUrl";
-import stars from "../components/Stars";
-import setFlags from "../components/SetFlags";
+import { useState } from "react";
+import SearchBar from "../components/SearchBar";
 
 export default function HomePage() {
   const [film, setFilm] = useState("");
-  const [tvSerie, setTvSerie] = useState("")
+  const [tvSerie, setTvSerie] = useState("");
   const [results, setResults] = useState([]);
   
   const handleSearch = () => {
-    if (!film) return; 
+    if (!film && !tvSerie) return; 
     Promise.all([
         axios.get(`https://api.themoviedb.org/3/search/movie?api_key=da445b1f8c881fe7432f8928e0e4f76f&query=${film}`),
         axios.get(`https://api.themoviedb.org/3/search/tv?api_key=da445b1f8c881fe7432f8928e0e4f76f&language=it_IT&query=${tvSerie}`)
@@ -20,7 +18,7 @@ export default function HomePage() {
         .then(([res1, res2]) => {
       })
       .catch((err) => {
-        console.log("Errore durante le richieste", err);
+        console.error("Errore durante le richieste", err);
         setResults([]); 
       });
   };
@@ -29,30 +27,15 @@ export default function HomePage() {
     <>
       <SearchBar film={film} setFilm={setFilm} setTvSerie = {setTvSerie} onSearch={handleSearch} />
       <h1>Risultati Trovati</h1>
-      <ul>
+      <div>
         {results.length > 0 ? (
-          results.map((result) => {
-            const language = result.original_language
-            const poster = result.poster_path
-          ? `${ImgUrl.IMG_URL}${result.poster_path}`
-          : `${ImgUrl.emptyIMG}`
-
-          const vote = result.vote_average.toFixed(0)/2  
-          
-          return(
-            <li key={result.id}>
-            <h1 style={{color: result.title ? 'black' : 'red'}}>Titolo: {result.title || result.name} </h1>
-            <h3>Titolo Originale: {result.original_title} {result.original_name}</h3>
-            <img src={poster} alt="" />
-            <p>Lingua:{result.original_language}<img src={setFlags(language)} alt="" style={{width:"35px"}}/> </p>
-            <p> {stars(vote)}</p>
-            </li>
-           )
-        })
+        results.map((result) => (
+          <Card key={result.id} data={result} />
+          ))
         ) : (
           <p>Nessun risultato trovato.</p>
         )}
-      </ul>
+      </div>
     </>
   );
 }
