@@ -1,6 +1,6 @@
-import GlobalContext from "./context/GlobalContext"
+import GlobalContext from "./src/context/GlobalContext"
 import axios from "axios"
-import HomePage from "./pages/HomePage"
+import HomePage from "./src/pages/HomePage"
 import './App.css'
 
 function App() {

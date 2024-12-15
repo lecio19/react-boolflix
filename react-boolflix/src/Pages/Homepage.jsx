@@ -3,6 +3,8 @@ import { useState } from "react";
 import axios from "axios";
 import Flags from "../context/Flags";
 import ImgUrl from "../context/ImgUrl";
+import stars from "../components/Stars";
+import setFlags from "../components/SetFlags";
 
 export default function HomePage() {
   const [film, setFilm] = useState("");
@@ -22,16 +24,6 @@ export default function HomePage() {
         setResults([]); 
       });
   };
-
-  function flags(language) {
-    if (language === "en") {
-      return Flags.usa;
-    } else if (language === "it"){
-        return Flags.ita
-    } else if (language === 'jp'){
-        return Flags.jap
-    }
-  }
   
   return (
     <>
@@ -44,13 +36,16 @@ export default function HomePage() {
             const poster = result.poster_path
           ? `${ImgUrl.IMG_URL}${result.poster_path}`
           : `${ImgUrl.emptyIMG}`
-            return(
+
+          const vote = result.vote_average.toFixed(0)/2  
+          
+          return(
             <li key={result.id}>
             <h1 style={{color: result.title ? 'black' : 'red'}}>Titolo: {result.title || result.name} </h1>
             <h3>Titolo Originale: {result.original_title} {result.original_name}</h3>
             <img src={poster} alt="" />
-            <p>Lingua:{result.original_language}<img src={flags(language)} alt="" style={{width:"35px"}}/> </p>
-            <p>Voto: {result.vote_average.toFixed(1)}</p> 
+            <p>Lingua:{result.original_language}<img src={setFlags(language)} alt="" style={{width:"35px"}}/> </p>
+            <p>Voto: {stars(vote)}</p>
             </li>
            )
         })
