@@ -2,23 +2,23 @@ import SearchBar from "../components/SearchBar";
 import { useState } from "react";
 import axios from "axios";
 import Flags from "../context/Flags";
+import ImgUrl from "../context/ImgUrl";
 
 export default function HomePage() {
   const [film, setFilm] = useState("");
+  const [tvSerie, setTvSerie] = useState("")
   const [results, setResults] = useState([]);
   
   const handleSearch = () => {
     if (!film) return; 
-    axios
-      .get(
-        `https://api.themoviedb.org/3/search/movie?api_key=da445b1f8c881fe7432f8928e0e4f76f&query=${film}`
-      )
-      .then((res) => {
-        setResults(res.data.results); 
-        console.log(res.data.results); 
+    Promise.all([
+        axios.get(`https://api.themoviedb.org/3/search/movie?api_key=da445b1f8c881fe7432f8928e0e4f76f&query=${film}`),
+        axios.get(`https://api.themoviedb.org/3/search/tv?api_key=da445b1f8c881fe7432f8928e0e4f76f&language=it_IT&query=${tvSerie}`)
+      ])
+        .then(([res1, res2]) => {
       })
       .catch((err) => {
-        console.log("Errore durante la ricerca", err);
+        console.log("Errore durante le richieste", err);
         setResults([]); 
       });
   };
@@ -35,18 +35,22 @@ export default function HomePage() {
   
   return (
     <>
-      <SearchBar film={film} setFilm={setFilm} onSearch={handleSearch} />
-      <h1>Film Trovati</h1>
+      <SearchBar film={film} setFilm={setFilm} setTvSerie = {setTvSerie} onSearch={handleSearch} />
+      <h1>Risultati Trovati</h1>
       <ul>
         {results.length > 0 ? (
           results.map((result) => {
             const language = result.original_language
+            const poster = result.poster_path
+          ? `${ImgUrl.IMG_URL}${result.poster_path}`
+          : `${ImgUrl.emptyIMG}`
             return(
             <li key={result.id}>
-            <h1>Titolo: {result.title} </h1>
-              <h3>Titolo Originale: {result.original_title}</h3>
-              <p>Lingua:{result.original_language}<img src={flags(language)} alt="" style={{width:"35px"}}/> </p>
-              <p>Voto: {result.vote_average.toFixed(1)}</p> 
+            <h1 style={{color: result.title ? 'black' : 'red'}}>Titolo: {result.title || result.name} </h1>
+            <h3>Titolo Originale: {result.original_title} {result.original_name}</h3>
+            <img src={poster} alt="" />
+            <p>Lingua:{result.original_language}<img src={flags(language)} alt="" style={{width:"35px"}}/> </p>
+            <p>Voto: {result.vote_average.toFixed(1)}</p> 
             </li>
            )
         })
