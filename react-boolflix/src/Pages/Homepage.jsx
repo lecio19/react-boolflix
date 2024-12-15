@@ -1,6 +1,8 @@
-import SearchBar from "../../components/SearchBar";
+import SearchBar from "../components/SearchBar";
 import { useState } from "react";
 import axios from "axios";
+import Flags from "../context/Flags";
+
 export default function HomePage() {
   const [film, setFilm] = useState("");
   const [results, setResults] = useState([]);
@@ -20,26 +22,36 @@ export default function HomePage() {
         setResults([]); 
       });
   };
+
+  function flags(language) {
+    if (language === "en") {
+      return Flags.usa;
+    } else if (language === "it"){
+        return Flags.ita
+    } else if (language === 'jp'){
+        return Flags.jap
+    }
+  }
+  
   return (
     <>
+      <SearchBar film={film} setFilm={setFilm} onSearch={handleSearch} />
       <h1>Film Trovati</h1>
-      <SearchBar
-        film={film}
-        setFilm={setFilm}
-        onSearch={handleSearch}
-      />
       <ul>
         {results.length > 0 ? (
-          results.map((result) => (
+          results.map((result) => {
+            const language = result.original_language
+            return(
             <li key={result.id}>
-              Titolo: {result.title} <br />
-              Titolo Originale: {result.original_title} <br />
-              Lingua: {result.original_language} <br />
-              Voto: {result.vote_average.toFixed(1)}
+            <h1>Titolo: {result.title} </h1>
+              <h3>Titolo Originale: {result.original_title}</h3>
+              <p>Lingua:{result.original_language}<img src={flags(language)} alt="" style={{width:"35px"}}/> </p>
+              <p>Voto: {result.vote_average.toFixed(1)}</p> 
             </li>
-          ))
+           )
+        })
         ) : (
-            <p>Nessun risultato trovato.</p>
+          <p>Nessun risultato trovato.</p>
         )}
       </ul>
     </>
