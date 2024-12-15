@@ -1,8 +1,9 @@
-
+import GlobalContext from "./context/GlobalContext"
+import axios from "axios"
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  
 
   return (
     <>
