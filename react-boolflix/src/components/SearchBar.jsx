@@ -5,8 +5,8 @@ const handleInput = (event) => {
     setTvSerie (event.target.value)
 }
     return(
-    <div>
-        <input type="text" 
+    <div className="search-container">
+        <input className="input-bar" type="text" 
         placeholder="trova un film o una serie TV..."
         value={film || tvSerie}
         onChange={handleInput}

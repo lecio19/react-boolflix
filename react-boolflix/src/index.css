@@ -23,11 +23,8 @@ body{
   margin: 15px;
 }
 
-.card {
-  width: 250px;
-  height: 450px;
-  position: relative;
-  transform-style: preserve-3d;
+.card-language img {
+  margin-left: 5px; 
 }
 
 .card-front,
@@ -74,3 +71,24 @@ body{
   width: 40%; 
 }
 
+/* SEARCHBUTTON */
+.input-bar, button{
+  background-color: black;
+  padding: 8px;
+  color: white;
+}
+
+button{
+  background-color: red;
+}
+
+.search-container{
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+/* HEADER */
+.header-container{
+  background-color: brown;
+  padding: 20px;
+}
